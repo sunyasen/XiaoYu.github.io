@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  
+    <meta name="description" content="">
+  
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+  <title>JavaScript宿主对象DOM与BOM - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Fluid</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="JavaScript宿主对象DOM与BOM">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-02-26 17:10" pubdate>
+        February 26, 2021 pm
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">JavaScript宿主对象DOM与BOM</h1>
+            
+            <div class="markdown-body">
+              <h3 id="什么是DOM？"><a href="#什么是DOM？" class="headerlink" title="什么是DOM？"></a>什么是DOM？</h3><ul>
+<li><p>DOM，全称Document Object Model文档对象模型。</p>
+</li>
+<li><p>JS中通过DOM来对HTML文档进行操作。只要理解了DOM就可以随心所欲的操作WEB页面。</p>
+</li>
+<li><p>文档</p>
+<p>​    -文档表示的就是整个HTML网页文档</p>
+</li>
+<li><p>对象</p>
+<p>​    -对象表示将网页的每一个部分都转换成了一个对象</p>
+</li>
+<li><p>模型</p>
+<p>​    -使用模型来表示对象之间的关系，这样方便我们获取对象</p>
+</li>
+</ul>
+<p><strong>节点</strong></p>
+<p>节点：Node—构成HTML文档最基本的单元。</p>
+<p>常用节点分为四类</p>
+<p>​    -文档节点：整个HTML文档</p>
+<p>​    -元素节点：HTML文档中的HTML标签</p>
+<p>​    -属性节点：元素的属性</p>
+<p>​    -文本节点：HTML标签中的文本内容</p>
+<p>注:所谓的节点也就是对象</p>
+<h3 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h3><p>事件，就是文档或浏览器窗口中发生的一些特定的交互瞬间。</p>
+<p>JavaScript与HTML之间的交互是通过时间实现的。</p>
+<p>对于Web应用来说，有下面这些代表性的事件：点击某个元素，将鼠标移动至某个元素上方，按下键盘上某个键，等等。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs HTML"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&#x27;utf-8&#x27;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&#x27;X-UA-Compatible&#x27;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&#x27;IE=edge&#x27;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>Page Title<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- </span><br><span class="hljs-comment"></span><br><span class="hljs-comment">            我们可以在事件对于的属性中设置一些js代码</span><br><span class="hljs-comment">                    这样当事件被触发时，这些代码将会执行</span><br><span class="hljs-comment">    </span><br><span class="hljs-comment">            这种方法不推荐使用</span><br><span class="hljs-comment">                --&gt;</span><br>    <br>    <span class="hljs-comment">&lt;!-- &lt;button id=&quot;brn&quot; onclick=&quot;alert(&#x27;讨厌你点我干嘛!&#x27;);&quot;&gt;我是一个按钮&lt;/button&gt; --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;btn&quot;</span>&gt;</span>我是一个按钮<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><br><br>        /**<br>            事件：就是用户与浏览器之间的一些交互行为<br>        */<br><br><br><span class="javascript">        <span class="hljs-keyword">var</span> btn = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;btn&quot;</span>);</span><br><br><span class="javascript">        <span class="hljs-built_in">console</span>.log(btn);</span><br>        <br>        /*<br>            可以为按钮的对应事件绑定处理函数的形式来响应事件<br>        */<br><span class="javascript">        <span class="hljs-comment">//绑定一个单击事件</span></span><br><span class="javascript">        <span class="hljs-comment">// btn.onclick = function()&#123;</span></span><br><span class="javascript">        <span class="hljs-comment">//     alert(&quot;你还点----&quot;)</span></span><br><span class="javascript">        <span class="hljs-comment">// &#125;;</span></span><br><span class="javascript">        <span class="hljs-comment">//绑定双击事件</span></span><br><span class="javascript">        btn.ondblclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;</span><br><span class="javascript">            alert(<span class="hljs-string">&quot;你还点----&quot;</span>)</span><br>        &#125;;<br><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>注</strong>:浏览器加载页面是自上往下加载的</p>
+<h4 id="获取元素系节点"><a href="#获取元素系节点" class="headerlink" title="获取元素系节点"></a>获取元素系节点</h4><p>通过document对象调用</p>
+<p>1.getElementById()</p>
+<p>​    -通过id属性获取一个元素节点对象</p>
+<p>2.getElementsByTagName()</p>
+<p>​    -通过标签名获取一组元素节点对象</p>
+<p>3.getElementsByName()</p>
+<p>​    -通过name属性获取一组元素节点对象</p>
+<h4 id="DOM常用的方法总结"><a href="#DOM常用的方法总结" class="headerlink" title="DOM常用的方法总结"></a>DOM常用的方法总结</h4><pre><code>            getElementById()    返回带有指定ID 的元素。
+            getElementsByTagName()  返回包含带有指定标签名称的所有元素的节
+            点列表(集合/节点数组)。
+            getElementsByClassName()    返回包含带有指定类名的所有元素的节
+            点列表。(但是该方法不支持IE8及一下的浏览器)
+            getElementsByName(&#39;a&#39;) 通过name属性获取一组元素节点对象
+            document.querySelector(&#39;#a&#39;) 通过CSS选择器来获取一个元素节点对象
+            document.querySelectorAll(&#39;span&#39;) 通过CSS选择器来获取一组元素节点对象
+            appendChild()   把新的子节点添加到指定节点。
+            removeChild()   删除子节点。
+            replaceChild()  替换子节点。
+            insertBefore()  在指定的子节点前面插入新的子节点。
+            createAttribute()   创建属性节点。
+            createElement() 创建元素节点。
+            createTextNode()    创建文本节点。
+            getAttribute()  返回指定的属性值。
+            setAttribute()  把指定属性设置或修改为指定的值。
+            当前节点.paretNode   表示当前节点的父节点
+            当前节点.previousSibling 表示当前节点的前一个兄弟节点 (也可能获取空白文本)
+            当前节点.nextSibling 表示当前节点的后一个兄弟节点
+            父节点.firstchild 可以获取第一个子节点(包括空白文本节点)
+            父节点.firstElementchild 可以获取第一个子元素(不包括空白文本节点)
+            父节点.childNodes 表示当前节点的所有子节点.注意：在IE8及以下的浏览器中，不会将空白文本当成子节点
+</code></pre>
+<h4 id="通过DOM修改css样式"><a href="#通过DOM修改css样式" class="headerlink" title="通过DOM修改css样式"></a>通过DOM修改css样式</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs javascript">        <span class="hljs-comment">/**</span><br><span class="hljs-comment">         * 点击按钮以后，修改box1的大小</span><br><span class="hljs-comment">         * </span><br><span class="hljs-comment">         */</span><br>        <span class="hljs-comment">//获取box1</span><br>        <span class="hljs-keyword">var</span> box1 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;box1&quot;</span>);<br>        <span class="hljs-comment">//为按钮绑定单机响应函数</span><br>        <span class="hljs-keyword">var</span> btn01 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;btn01&quot;</span>);<br><br>        btn01.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;               <br><span class="hljs-comment">//修改box1的宽高</span><br>            <span class="hljs-comment">/**  </span><br><span class="hljs-comment">             * 通过JS修改元素的样式</span><br><span class="hljs-comment">             * 语法：元素.style.样式名 = 样式值</span><br><span class="hljs-comment">             * </span><br><span class="hljs-comment">             * 注意：如果css的样式名中含有-</span><br><span class="hljs-comment">             *      这种名称再JS中是不合法的比如 background-color</span><br><span class="hljs-comment">             *      需要将这种样式名修改为驼峰命名法</span><br><span class="hljs-comment">             *  </span><br><span class="hljs-comment">             * 我们通过style属性设置的样式都是内联样式</span><br><span class="hljs-comment">             *  而内联样式有较高的优先级，所以通过JS修改的样式往往会立即显示</span><br><span class="hljs-comment">             * </span><br><span class="hljs-comment">             *  但是如果在样式写了！important,则此时样式会有最高的优先级</span><br><span class="hljs-comment">             *      即使通过JS也不能覆盖改样式，此时将会导致JS修改样式失效</span><br><span class="hljs-comment">             *      所以尽量不要为样式添加！important</span><br><span class="hljs-comment">             */</span><br>            box1.style.width = <span class="hljs-string">&quot;300px&quot;</span>;<br>            box1.style.height = <span class="hljs-string">&quot;300px&quot;</span>;<br>            box1.style.backgroundColor = <span class="hljs-string">&quot;yellow&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>读取样式</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> btn02 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;btn02&quot;</span>);<br>          btn02.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;<br>              <span class="hljs-comment">/**</span><br><span class="hljs-comment">               * 读取box1的样式</span><br><span class="hljs-comment">               * </span><br><span class="hljs-comment">               * 通过style属性设置和读取的都是内联样式</span><br><span class="hljs-comment">               *  无法读取样式表种的样式</span><br><span class="hljs-comment">               */</span><br>              <span class="hljs-comment">// alert(box1.style.height);</span><br>              alert(box1.style.height);<br>          &#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>获取元素的当前样式(currentStyle只有IE浏览器支持)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//点击按钮以后读取box1的样式</span><br>			<span class="hljs-keyword">var</span> box1 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;box1&quot;</span>);<br>			<span class="hljs-keyword">var</span> btn01 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;btn01&quot;</span>);<br>			btn01.onclick = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;<br><br>				<span class="hljs-comment">/*</span><br><span class="hljs-comment">				 * 获取元素的当前显示的样式</span><br><span class="hljs-comment">				 * 	语法：元素.currentStyle.样式名</span><br><span class="hljs-comment">				 * 它可以用来读取当前元素正在显示的样式</span><br><span class="hljs-comment">				 * 	如果当前元素没有设置该样式，则获取它的默认值</span><br><span class="hljs-comment">				 * </span><br><span class="hljs-comment">				 * currentStyle只有IE浏览器支持，其他的浏览器都不支持</span><br><span class="hljs-comment">				 */</span><br>                    alert(box1.currentStyle.backgroundColor);<br><br>			&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>获取元素css当前的样式(不支持IE8及一下)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 在其他浏览器中可以使用</span><br><span class="hljs-comment"> *          getComputedStyle()这个方法来获取元素当前的样式</span><br><span class="hljs-comment"> *          这个方法是window的方法，可以直接使用</span><br><span class="hljs-comment"> * 需要两个参数</span><br><span class="hljs-comment"> *          第一个:要获取样式的元素</span><br><span class="hljs-comment"> *          第二个：可以传递一个伪元素，一般都穿null</span><br><span class="hljs-comment"> * </span><br><span class="hljs-comment"> * 该方法会返回一个对象，对象种封装了当前元素对应的样式</span><br><span class="hljs-comment"> *  可以通过对象，样式名来读取样式</span><br><span class="hljs-comment"> *  如果获取的样式没有设置，则会获取到真实的值，而不是默认值</span><br><span class="hljs-comment"> *  比如：没有设置width，他不会获取到auto，而是一个长度</span><br><span class="hljs-comment"> * </span><br><span class="hljs-comment"> * 但是该方法不支持IE8及一下的浏览器</span><br><span class="hljs-comment"> * </span><br><span class="hljs-comment"> */</span><br><br> <span class="hljs-keyword">var</span> obj = getComputedStyle(box1,<span class="hljs-literal">null</span>);<br> alert(obj.width);<br><span class="hljs-comment">//  alert(obj.backgroundColor);</span><br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/02/26/%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E5%92%8C%E5%87%A0%E4%B8%AA%E7%BB%8F%E5%85%B8%E9%A2%98%E7%9B%AE%E8%A7%A3%E6%9E%90/">
+                        <span class="hidden-mobile">异或运算和几个经典题目解析</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>
